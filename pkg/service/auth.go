@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"github.com/mdigger/translit"
 	"github.com/sethvargo/go-password/password"
+	"math/rand"
+	"time"
 )
 
 const salt = "fgnjgdfgdfgdfdfdsaaa"
@@ -29,11 +31,12 @@ func (s *AuthService) CreateAccount(account types.Account, name string) (int, er
 	account.Login = s.GenerateLogin(name)
 	account.Password = s.GeneratePasswordHash(psw)
 
-	return s.repo.CreateAccount(account, name)
+	return s.repo.CreateAccount(account)
 }
 
 func (s *AuthService) GenerateLogin(name string) string {
-	return translit.Ru(name)
+	rand.Seed(time.Now().UnixNano())
+	return fmt.Sprintf("%s%d", translit.Ru(name), (rand.Intn(1000 - 1)))
 }
 
 func (s *AuthService) GeneratePassword() string {
