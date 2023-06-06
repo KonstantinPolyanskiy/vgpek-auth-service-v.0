@@ -27,7 +27,7 @@ func (r *AuthPostgres) CreateUser(user types.User, accountId int) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) CreateAccount(account types.Account, name string) (int, error) {
+func (r *AuthPostgres) CreateAccount(account types.Account) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (login, password_hash) VALUES ($1, $2) RETURNING id", accountsTable)
 
