@@ -10,6 +10,7 @@ type Authorization interface {
 	CreateAccount(account types.Account, name string) (int, error)
 	GenerateLogin(name string) string
 	GeneratePassword() string
+	GenerateToken(login string, password string) (string, error)
 }
 type Service struct {
 	Authorization

@@ -16,7 +16,8 @@ func (h *Handler) signUp(c *gin.Context) {
 
 	accountId, err := h.service.CreateAccount(types.Account{
 		Login:    h.service.GenerateLogin(input.Name),
-		Password: h.service.GeneratePassword()},
+		Password: h.service.GeneratePassword(),
+	},
 		input.Name)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -31,6 +32,26 @@ func (h *Handler) signUp(c *gin.Context) {
 		"id": userId,
 	})
 }
-func (h *Handler) signIn(c *gin.Context) {
 
+type signUpInput struct {
+	Login    string `json:"login" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (h *Handler) signIn(c *gin.Context) {
+	var input signUpInput
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.service.Authorization.GenerateToken(input.Login, input.Password)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

@@ -14,6 +14,15 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
+func (r *AuthPostgres) GetAccount(login, password string) (types.Account, error) {
+	var account types.Account
+
+	query := fmt.Sprintf("SELECT id FROM %s WHERE login=$1 AND password_hash=$2", accountsTable)
+	err := r.db.Get(&account, query, login, password)
+
+	return account, err
+}
+
 func (r *AuthPostgres) CreateUser(user types.User, accountId int) (int, error) {
 	var id int
 

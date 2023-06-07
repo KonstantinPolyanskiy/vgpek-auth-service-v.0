@@ -6,6 +6,7 @@ import (
 )
 
 type Authorization interface {
+	GetAccount(login, password string) (types.Account, error)
 	CreateUser(user types.User, accountId int) (int, error)
 	CreateAccount(account types.Account) (int, error)
 }
